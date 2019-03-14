@@ -5,6 +5,7 @@ import { TodoService } from './todo.service';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/throw';
+import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
 
 describe('TodosComponent', () => {
   let component: TodosComponent;
@@ -61,6 +62,28 @@ describe('TodosComponent', () => {
     component.add();
 
     expect(component.message).toBe(error);
+
+  });
+
+  xit('it should call the server to delete a todo item if the user confirms', () => {
+    
+    spyOn(window,'confirm').and.returnValue(true);
+    let spy = spyOn(service,'delete').and.returnValue(Observable.empty);
+
+    component.delete(1);
+
+    expect(spy).toHaveBeenCalledWith(1);
+
+  });
+
+  it('it should NOT call the server to delete a todo item if the user cancels', () => {
+    
+    spyOn(window,'confirm').and.returnValue(false);
+    let spy = spyOn(service,'delete').and.returnValue(Observable.empty);
+
+    component.delete(1);
+
+    expect(spy).not.toHaveBeenCalled();
 
   });
   
