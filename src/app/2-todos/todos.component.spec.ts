@@ -3,9 +3,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
+import { HttpModule } from '@angular/http';
+import { Observable } from 'rxjs';
+
 import { TodosComponent } from './todos.component';
 import { TodoService } from './todo.service';
-import { HttpModule } from '@angular/http';
 
 //NOTE: I've deliberately excluded this suite from running
 // because the test will fail. This is because we have not 
@@ -30,10 +32,17 @@ xdescribe('TodosComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TodosComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should load todos from the server', () => {
+     let service = TestBed.get(TodoService); //This only gete dependencies from the app module level
+     spyOn(service,'getTodods').and.returnValue(Observable.from([[1,2,3]]));
+
+     fixture.detectChanges();
+     expect(component.todos.length).toBe(3); 
   });
 });
